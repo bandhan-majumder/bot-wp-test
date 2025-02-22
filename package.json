@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "npx tsc -b",
-    "start": "node dist/index.js",
-    "dev": "npm run build && npm run start"
+    "dev": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +19,7 @@
   "description": "",
   "dependencies": {
     "@types/express": "^5.0.0",
+    "axios": "^1.7.9",
     "express": "^4.21.2",
     "typescript": "^5.7.3"
   }
