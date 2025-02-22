@@ -64,13 +64,19 @@ app.get('/health', (req, res) => {
 app.post('/webhook', express.json(), async (req, res) => {
     let body = req.body;
 
-    const fullMessage = JSON.stringify(body.entry[0].changes, null, 2);
-    console.log(fullMessage);
-    
+    const changes = JSON.stringify(body.entry[0].changes, null, 2);
+    console.log(changes);
+
     try {
-        console.log(fullMessage[0].value.messages[0].text.body)
-    console.log(fullMessage[0].value.messages[0].from)
-    console.log(fullMessage[0].value.contacts[0].profile.name)
+        changes.forEach(change => {
+            if (change.field === "messages" && change.value?.messages) {
+                change.value.messages.forEach(message => {
+                    if (message.type === "text") {
+                        console.log("Received message:", message.text.body);
+                    }
+                });
+            }
+        });
     } catch (e) {
         console.log("error in parsing message", e);
     }
@@ -81,8 +87,8 @@ app.post('/webhook', express.json(), async (req, res) => {
             body.entry[0].changes[0].value.messages &&
             body.entry[0].changes[0].value.messages[0]
         ) {
-            try{
-                const resp  = await sendWhatsAppTemplate();
+            try {
+                const resp = await sendWhatsAppTemplate();
                 console.log(resp);
             } catch (e) {
                 console.log("error in sending response", e);
