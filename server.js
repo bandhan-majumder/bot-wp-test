@@ -70,16 +70,6 @@ app.post('/webhook', express.json(), async (req, res) => {
             body.entry[0].changes[0].value.messages &&
             body.entry[0].changes[0].value.messages[0]
         ) {
-            let phone_number_id = body.entry[0].changes[0].value.metadata.phone_number_id;
-            let from = body.entry[0].changes[0].value.messages[0].from;
-            let msg_body = body.entry[0].changes[0].value.messages[0].text.body;
-
-            console.log('Received message:', {
-                phone_number_id,
-                from,
-                msg_body
-            });
-            
             try{
                 const resp  = await sendWhatsAppTemplate();
                 console.log(resp);
