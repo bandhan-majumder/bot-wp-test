@@ -7,7 +7,7 @@ async function sendWhatsAppTemplate() {
     try {
         const response = await axios({
             method: 'POST',
-            url: 'https://graph.facebook.com/v21.0/572643735931375/messages',
+            url: 'https://graph.facebook.com/v22.0/572643735931375/messages',
             headers: {
                 'Authorization': 'Bearer EAAHE4DDAyWsBO71OKlNFBL2tc6VWyNt9EUBJFU5bNSHeZBe1O93bMyZA7K5UukEHEZBnFsKNaLTKzSzungxNbSSYo6OqCyN6OnuRdbEroxx8OfwlKdl9BcEoeg9aMTQf9SUK6vm5xZC6ZBVmZBTERQOrgCYtQpR6iB8XVNWsYOhiKll0OviBmznJ6ZCwbBUzHXNt4j4GbulTNdaeZABp2bo36J5o6JJvfmMGRtU3P6zXP505jFEPR1MZD',
                 'Content-Type': 'application/json'
