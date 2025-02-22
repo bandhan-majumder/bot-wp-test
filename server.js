@@ -64,16 +64,9 @@ app.get('/health', (req, res) => {
 app.post('/webhook', express.json(), async (req, res) => {
     let body = req.body;
 
-    if (body.entry && body.entry[0] && body.entry[0].changes && body.entry[0].changes[0] && body.entry[0].changes[0].value) {
-        const value = body.entry[0].changes[0].value;
-        const contact = value.contacts ? value.contacts[0] : {};
-        const message = value.messages ? value.messages[0] : {};
-        const metadata = value.metadata || {};
-
-        console.log(`WhatsApp ID: ${contact.wa_id || 'N/A'}, Phone Number: ${metadata.display_phone_number || 'N/A'}, Name: ${contact.profile ? contact.profile.name : 'N/A'}, Message ID: ${message.id || 'N/A'}, Timestamp: ${message.timestamp || 'N/A'}, Text Body: ${message.text ? message.text.body : 'N/A'}`);
-    } else {
-        console.log("Invalid body structure");
-    }
+    console.log("Changes: ", JSON.stringify(body.entry[0].changes, null, 2));
+    console.log("Phone Number: ", body.entry[0].changes[0].value.metadata.display_phone_number);
+    console.log("Message Text: ", body.entry[0].changes[0].value.messages[0].text.body);
 
     if (body.object) {
         if (body.entry &&
