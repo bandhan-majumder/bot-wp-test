@@ -11,7 +11,7 @@ const userStates = new Map();
 
 // health check point
 app.get('/health', (req, res) => {
-    res.send('OK');
+    res.send('604602911');
 });
 // Handle incoming webhook
 app.post('/webhook', async (req, res) => {
