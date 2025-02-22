@@ -66,9 +66,14 @@ app.post('/webhook', express.json(), async (req, res) => {
 
     const fullMessage = JSON.stringify(body.entry[0].changes, null, 2);
     console.log(fullMessage);
-    console.log(fullMessage[0].value.messages[0].text.body)
+    
+    try {
+        console.log(fullMessage[0].value.messages[0].text.body)
     console.log(fullMessage[0].value.messages[0].from)
     console.log(fullMessage[0].value.contacts[0].profile.name)
+    } catch (e) {
+        console.log("error in parsing message", e);
+    }
 
     if (body.object) {
         if (body.entry &&
