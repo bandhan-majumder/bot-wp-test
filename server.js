@@ -68,6 +68,8 @@ app.post('/webhook', express.json(), async (req, res) => {
     console.log('Full message webhook:', fullMessage);
     console.log('Received webhook:', fullMessage[0].messages);
 
+    console.log("body is : ", JSON.stringify(body, null, 2));
+
     if (body.object) {
         if (body.entry &&
             body.entry[0].changes &&
