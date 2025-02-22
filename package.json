@@ -1,0 +1,25 @@
+{
+  "name": "bot-wp-test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bandhan-majumder/bot-wp-test.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bandhan-majumder/bot-wp-test/issues"
+  },
+  "homepage": "https://github.com/bandhan-majumder/bot-wp-test#readme",
+  "description": "",
+  "dependencies": {
+    "@types/express": "^5.0.0",
+    "express": "^4.21.2",
+    "typescript": "^5.7.3"
+  }
+}
