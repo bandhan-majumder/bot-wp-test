@@ -25,7 +25,7 @@ async function sendWhatsAppTemplate() {
                         type: "body",
                         parameters: [{
                             type: "text",
-                            text: "Bandhan Majumder"
+                            text: "VOZI"
                         }]
                     }]
                 }
@@ -65,7 +65,7 @@ app.post('/webhook', express.json(), async (req, res) => {
     let body = req.body;
 
     const fullMessage = JSON.stringify(body.entry[0].changes, null, 2);
-    console.log('Received webhook:', fullMessage[0].messages[0].text.body);
+    console.log('Received webhook:', fullMessage[0].messages);
 
     if (body.object) {
         if (body.entry &&
