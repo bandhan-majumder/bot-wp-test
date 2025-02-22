@@ -65,8 +65,7 @@ app.post('/webhook', express.json(), async (req, res) => {
     let body = req.body;
 
     console.log("Changes: ", JSON.stringify(body.entry[0].changes, null, 2));
-    console.log("Phone Number: ", body.entry[0].changes[0].value.metadata.display_phone_number);
-    console.log("Message Text: ", body.entry[0].changes[0].value.messages[0].text.body);
+    console.log("Message Text: ", body.entry[0].changes[0].value.messages);
 
     if (body.object) {
         if (body.entry &&
