@@ -25,7 +25,7 @@ async function sendWhatsAppTemplate() {
                         type: "body",
                         parameters: [{
                             type: "text",
-                            text: "YOUR_PARAMETER_VALUE"
+                            text: "Bandhan Majumder"
                         }]
                     }]
                 }
