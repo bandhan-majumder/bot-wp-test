@@ -9,7 +9,7 @@ async function sendWhatsAppTemplate() {
             method: 'POST',
             url: 'https://graph.facebook.com/v21.0/572643735931375/messages',
             headers: {
-                'Authorization': 'Bearer EAAHE4DDAyWsBOwsbG2lOUM40ygDPAaUXU5e0hjVouL5S5kqcDH8Wql6y4Y9ZC213AAXHIb4o5Qo8yyzTNDnYTpzujsZCpMibAvuYGViQl8KxL1cg0cIAZBgZCaNfYGQ5VVqFNKN5ZBrr95AqvoWweWHHCU2R5fvohTTr0ZCe38R1T58lJnyFEZCIN9jAJ3wiOZCQxnm9ad6GhZCrMmZAvs3BOZBpn3yZALcmTDOfeibJHP700SPVQZBH693cZD',
+                'Authorization': 'Bearer EAAHE4DDAyWsBO71OKlNFBL2tc6VWyNt9EUBJFU5bNSHeZBe1O93bMyZA7K5UukEHEZBnFsKNaLTKzSzungxNbSSYo6OqCyN6OnuRdbEroxx8OfwlKdl9BcEoeg9aMTQf9SUK6vm5xZC6ZBVmZBTERQOrgCYtQpR6iB8XVNWsYOhiKll0OviBmznJ6ZCwbBUzHXNt4j4GbulTNdaeZABp2bo36J5o6JJvfmMGRtU3P6zXP505jFEPR1MZD',
                 'Content-Type': 'application/json'
             },
             data: {
