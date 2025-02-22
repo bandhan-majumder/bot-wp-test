@@ -8,6 +8,11 @@ const WHATSAPP_TOKEN = 'YOUR_WHATSAPP_TOKEN';
 const WHATSAPP_API_URL = 'https://graph.facebook.com/v17.0/YOUR_PHONE_NUMBER_ID/messages';
 // Store user booking states
 const userStates = new Map();
+
+// health check point
+app.get('/health', (req, res) => {
+    res.send('OK');
+});
 // Handle incoming webhook
 app.post('/webhook', async (req, res) => {
     try {
