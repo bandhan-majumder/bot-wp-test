@@ -1,6 +1,43 @@
 const express = require('express');
 const app = express();
 const VERIFY_TOKEN = "your_unique_verify_token";
+const axios = require('axios');
+
+async function sendWhatsAppTemplate() {
+    try {
+        const response = await axios({
+            method: 'POST',
+            url: 'https://graph.facebook.com/v21.0/572643735931375/messages',
+            headers: {
+                'Authorization': 'Bearer EAAHE4DDAyWsBOwsbG2lOUM40ygDPAaUXU5e0hjVouL5S5kqcDH8Wql6y4Y9ZC213AAXHIb4o5Qo8yyzTNDnYTpzujsZCpMibAvuYGViQl8KxL1cg0cIAZBgZCaNfYGQ5VVqFNKN5ZBrr95AqvoWweWHHCU2R5fvohTTr0ZCe38R1T58lJnyFEZCIN9jAJ3wiOZCQxnm9ad6GhZCrMmZAvs3BOZBpn3yZALcmTDOfeibJHP700SPVQZBH693cZD',
+                'Content-Type': 'application/json'
+            },
+            data: {
+                messaging_product: "whatsapp",
+                to: "918617284049",
+                type: "template",
+                template: {
+                    name: "demo_booking",
+                    language: {
+                        code: "en_US"
+                    },
+                    components: [{
+                        type: "body",
+                        parameters: [{
+                            type: "text",
+                            text: "YOUR_PARAMETER_VALUE"
+                        }]
+                    }]
+                }
+            }
+        });
+        console.log('Response:', response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error:', error.response?.data || error);
+        throw error;
+    }
+}
 
 app.get('/webhook', (req, res) => {
     let mode = req.query["hub.mode"];
@@ -24,13 +61,13 @@ app.get('/health', (req, res) => {
     });
 });
 
-app.post('/webhook', express.json(), (req, res) => {
+app.post('/webhook', express.json(), async (req, res) => {
     let body = req.body;
 
     if (body.object) {
-        if (body.entry && 
-            body.entry[0].changes && 
-            body.entry[0].changes[0].value.messages && 
+        if (body.entry &&
+            body.entry[0].changes &&
+            body.entry[0].changes[0].value.messages &&
             body.entry[0].changes[0].value.messages[0]
         ) {
             let phone_number_id = body.entry[0].changes[0].value.metadata.phone_number_id;
@@ -42,6 +79,13 @@ app.post('/webhook', express.json(), (req, res) => {
                 from,
                 msg_body
             });
+            
+            try{
+                const resp  = await sendWhatsAppTemplate();
+                console.log(resp);
+            } catch (e) {
+                console.log("error in sending response", e);
+            }
 
             res.sendStatus(200);
         } else {
