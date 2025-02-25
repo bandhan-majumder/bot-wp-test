@@ -16,7 +16,7 @@ module.exports = async function sendServiceSelectionTemplate() {
                 template: {
                     name: "service_selection",
                     language: {
-                        code: "en_US"
+                        code: "en"
                     }
                 }
             }
