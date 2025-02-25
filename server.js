@@ -3,8 +3,14 @@ const app = express();
 const VERIFY_TOKEN = "your_unique_verify_token";
 const axios = require('axios');
 require('dotenv').config();
-const sendServiceSelectionTemplate = require('./template/serviceSelection.js');
+
+// import the templates
 const sendGreetingsTemplate = require('./template/greetings.js');
+const sendServiceSelectionTemplate = require('./template/serviceSelection.js');
+const sendAirportPickupConfirmationTemplate = require('./template/airportPickupConfirmation.js');
+const sendAirportDropoffSelectionTemplate = require('./template/airportDropoffSelection.js');
+const sendAirportPickupTemplate = require('./template/airportPickupSelection.js');
+const sendFinalBookingMsgTemplate = require('./template/finalBookingMsg.js');
 
 app.get('/webhook', (req, res) => {
     let mode = req.query["hub.mode"];
@@ -40,7 +46,8 @@ app.post('/webhook', express.json(), async (req, res) => {
             body.entry[0].changes[0].value.messages[0]
         ) {
             try{
-                const resp  = await sendGreetingsTemplate();
+                // TODO: recpNo will be passed dynamically
+                const resp  = await sendGreetingsTemplate(process.env.RECIEVER_NO);
                 console.log(resp);
             } catch (e) {
                 console.log("error in sending response", e);

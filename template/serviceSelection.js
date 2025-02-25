@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-module.exports = async function sendServiceSelectionTemplate() {
+module.exports = async function sendServiceSelectionTemplate(recpNo) {
     try {
         const response = await axios({
             method: 'POST',
@@ -11,7 +11,7 @@ module.exports = async function sendServiceSelectionTemplate() {
             },
             data: {
                 messaging_product: "whatsapp",
-                to: "918617284049",
+                to: recpNo,
                 type: "template",
                 template: {
                     name: "service_selection",

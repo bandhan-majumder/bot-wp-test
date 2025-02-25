@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-module.exports = async function sendGreetingsTemplate(recpNo) {
+module.exports = async function sendFinalBookingMsgTemplate(recpNo, refNo) {
     try {
         const response = await axios({
             method: 'POST',
@@ -14,7 +14,7 @@ module.exports = async function sendGreetingsTemplate(recpNo) {
                 to: recpNo,
                 type: "template",
                 template: {
-                    name: "demo_booking",
+                    name: "final_booking_msg",
                     language: {
                         code: "en_US"
                     },
@@ -22,7 +22,7 @@ module.exports = async function sendGreetingsTemplate(recpNo) {
                         type: "body",
                         parameters: [{
                             type: "text",
-                            text: "VOZI"
+                            text: refNo // booking reference number
                         }]
                     }]
                 }

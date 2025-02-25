@@ -1,10 +1,10 @@
 const axios = require('axios');
 
-module.exports = async function sendGreetingsTemplate(recpNo) {
+module.exports = async function sendAirportPickupConfirmationTemplate(recpNo) {
     try {
         const response = await axios({
             method: 'POST',
-            url: 'https://graph.facebook.com/v22.0/572643735931375/messages',
+            url: 'https://graph.facebook.com/v21.0/572643735931375/messages',
             headers: {
                 'Authorization': `Bearer ${process.env.TOKEN}`,
                 'Content-Type': 'application/json'
@@ -14,17 +14,10 @@ module.exports = async function sendGreetingsTemplate(recpNo) {
                 to: recpNo,
                 type: "template",
                 template: {
-                    name: "demo_booking",
+                    name: "airport_pickup_confirmation",
                     language: {
-                        code: "en_US"
-                    },
-                    components: [{
-                        type: "body",
-                        parameters: [{
-                            type: "text",
-                            text: "VOZI"
-                        }]
-                    }]
+                        code: "en"
+                    }
                 }
             }
         });
