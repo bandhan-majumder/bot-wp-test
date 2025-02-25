@@ -4,7 +4,7 @@ const VERIFY_TOKEN = "your_unique_verify_token";
 const axios = require('axios');
 require('dotenv').config();
 
-async function sendWhatsAppTemplate() {
+async function sendGreetingsTemplate() {
     try {
         const response = await axios({
             method: 'POST',
@@ -64,9 +64,9 @@ app.get('/health', (req, res) => {
 
 app.post('/webhook', express.json(), async (req, res) => {
     let body = req.body;
-    console.log("Message is: ", body.entry[0].changes[0].value);
-    const fullMessage = JSON.stringify(body.entry[0].changes, null, 2);
-    console.log('Received webhook:', fullMessage);
+    console.log("Message is: ", body.entry[0].changes[0].value.messages[0]);
+    const messageBody = body.entry[0].changes[0].value.messages[0].text.body;
+    console.log('Received message:', messageBody);
 
     if (body.object) {
         if (body.entry &&
@@ -75,7 +75,7 @@ app.post('/webhook', express.json(), async (req, res) => {
             body.entry[0].changes[0].value.messages[0]
         ) {
             try{
-                const resp  = await sendWhatsAppTemplate();
+                const resp  = await sendGreetingsTemplate();
                 console.log(resp);
             } catch (e) {
                 console.log("error in sending response", e);
