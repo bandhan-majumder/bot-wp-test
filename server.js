@@ -3,6 +3,7 @@ const app = express();
 const VERIFY_TOKEN = "your_unique_verify_token";
 const axios = require('axios');
 require('dotenv').config();
+const sendServiceSelectionTemplate = require('./template/serviceSelection.js');
 
 async function sendGreetingsTemplate() {
     try {
@@ -74,7 +75,7 @@ app.post('/webhook', express.json(), async (req, res) => {
             body.entry[0].changes[0].value.messages[0]
         ) {
             try{
-                const resp  = await sendGreetingsTemplate();
+                const resp  = await sendServiceSelectionTemplate();
                 console.log(resp);
             } catch (e) {
                 console.log("error in sending response", e);
