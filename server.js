@@ -4,42 +4,7 @@ const VERIFY_TOKEN = "your_unique_verify_token";
 const axios = require('axios');
 require('dotenv').config();
 const sendServiceSelectionTemplate = require('./template/serviceSelection.js');
-
-async function sendGreetingsTemplate() {
-    try {
-        const response = await axios({
-            method: 'POST',
-            url: 'https://graph.facebook.com/v22.0/572643735931375/messages',
-            headers: {
-                'Authorization': `Bearer ${process.env.TOKEN}`,
-                'Content-Type': 'application/json'
-            },
-            data: {
-                messaging_product: "whatsapp",
-                to: "918617284049",
-                type: "template",
-                template: {
-                    name: "demo_booking",
-                    language: {
-                        code: "en_US"
-                    },
-                    components: [{
-                        type: "body",
-                        parameters: [{
-                            type: "text",
-                            text: "VOZI"
-                        }]
-                    }]
-                }
-            }
-        });
-        console.log('Response:', response.data);
-        return response.data;
-    } catch (error) {
-        console.error('Error:', error.response?.data || error);
-        throw error;
-    }
-}
+const sendGreetingsTemplate = require('./template/greetings.js');
 
 app.get('/webhook', (req, res) => {
     let mode = req.query["hub.mode"];
@@ -75,7 +40,7 @@ app.post('/webhook', express.json(), async (req, res) => {
             body.entry[0].changes[0].value.messages[0]
         ) {
             try{
-                const resp  = await sendServiceSelectionTemplate();
+                const resp  = await sendGreetingsTemplate();
                 console.log(resp);
             } catch (e) {
                 console.log("error in sending response", e);
