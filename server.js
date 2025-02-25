@@ -64,8 +64,7 @@ app.get('/health', (req, res) => {
 
 app.post('/webhook', express.json(), async (req, res) => {
     let body = req.body;
-    console.log("Message is: ", body.entry[0].changes[0].value);
-    console.log('Received message:', messageBody);
+    console.log("Message is: ", body.entry[0].changes[0].value.messages);
 
     if (body.object) {
         if (body.entry &&
