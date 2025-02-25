@@ -9,7 +9,7 @@ async function sendWhatsAppTemplate() {
             method: 'POST',
             url: 'https://graph.facebook.com/v22.0/572643735931375/messages',
             headers: {
-                'Authorization': `Bearer ${TOKEN}`,
+                'Authorization': `Bearer ${process.env.TOKEN}`,
                 'Content-Type': 'application/json'
             },
             data: {
