@@ -1,5 +1,6 @@
+const axios = require('axios');
 
-async function sendServiceSelectionTemplate() {
+module.exports = async function sendServiceSelectionTemplate() {
     try {
         const response = await axios({
             method: 'POST',
@@ -19,6 +20,10 @@ async function sendServiceSelectionTemplate() {
                     },
                     components: [{
                         type: "body",
+                        parameters: [{
+                            type: "text",
+                            text: "Your message here"
+                        }]
                     }]
                 }
             }
