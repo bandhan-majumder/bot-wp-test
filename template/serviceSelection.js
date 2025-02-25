@@ -17,14 +17,7 @@ module.exports = async function sendServiceSelectionTemplate() {
                     name: "service_selection",
                     language: {
                         code: "en_US"
-                    },
-                    components: [{
-                        type: "body",
-                        parameters: [{
-                            type: "text",
-                            text: "Your message here"
-                        }]
-                    }]
+                    }
                 }
             }
         });
