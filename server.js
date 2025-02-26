@@ -38,48 +38,26 @@ app.post('/webhook', express.json(), async (req, res) => {
     if (body.entry[0].changes[0].value.messages) {
         const userTextType = body.entry[0].changes[0].value.messages[0].type;
         console.log("User text type is: ", userTextType);
-        const userText = JSON.stringify(body.entry[0].changes[0].value.messages[0].text.body);
-        console.log("User text is: ", userText);
 
-        console.log(userTextType === "text");
-        console.log(typeof userTextType);
-        console.log(userTextType === "text");
-
-        console.log("coming 1-------")
+        // initial message from the user
         if (userTextType.toString() === "text") {
-            console.log("coming 2-------")
-            switch (true) {
-                case /hi/i.test(userText): // Add your logic here for when the user text is "hi"
-                console.log("coming 3-------")
-                    try {
-                        console.log("coing to send greetings template");
-                        const resp = await sendGreetingsTemplate(process.env.RECIEVER_NO);
-                        console.log(resp);
-                        res.sendStatus(200);
-                    } catch (e) {
-                        console.log("Error in sending response", e);
-                        res.sendStatus(404);
-                    }
-                    break;
-                case /hello/i.test(userText):
-                    try {
-                        const resp = await sendGreetingsTemplate(process.env.RECIEVER_NO);
-                        console.log(resp);
-                        res.sendStatus(200);
-                    } catch (e) {
-                        console.log("Error in sending response", e);
-                        res.sendStatus(404);
-                    }
-                    break;
-                default:
-                    break;
+            // extract the user text
+            const userText = JSON.stringify(body.entry[0].changes[0].value.messages[0].text.body);
+            try {
+                const resp = await sendGreetingsTemplate(process.env.RECIEVER_NO);
+                console.log(resp);
+                res.sendStatus(200);
+            } catch (e) {
+                console.log("Error in sending response", e);
+                res.sendStatus(404);
             }
-        } else {
-            console.log("coming 5-------")
-            if (userTextType === "button"){
-                console.log("User text type is button");
-                console.log(body.entry[0].changes[0].value)
-            }
+        }
+
+        if (userTextType.toString() === "button") {
+            // user interacts with the template
+            console.log("Inside button: ")
+            console.log("User text type is button");
+            console.log(body.entry[0].changes[0].value)
         }
     } else {
         console.log("coming 6-------")
