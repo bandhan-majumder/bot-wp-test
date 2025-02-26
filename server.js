@@ -58,6 +58,7 @@ app.post('/webhook', express.json(), async (req, res) => {
             console.log("Inside button: ")
             console.log("User text type is button");
             console.log(body.entry[0])
+            console.log("Body is: ", body)
         }
     } else {
         console.log("other logs");
