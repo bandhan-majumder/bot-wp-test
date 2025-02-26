@@ -41,9 +41,12 @@ app.post('/webhook', express.json(), async (req, res) => {
         const userText = JSON.stringify(body.entry[0].changes[0].value.messages[0].text.body);
         console.log("User text is: ", userText);
 
+        console.log("coming 1-------")
         if (userTextType === "text") {
+            console.log("coming 2-------")
             switch (true) {
                 case /hi/i.test(userText): // Add your logic here for when the user text is "hi"
+                console.log("coming 3-------")
                     try {
                         console.log("coing to send greetings template");
                         const resp = await sendGreetingsTemplate(process.env.RECIEVER_NO);
@@ -68,12 +71,14 @@ app.post('/webhook', express.json(), async (req, res) => {
                     break;
             }
         } else {
+            console.log("coming 5-------")
             if (userTextType === "button"){
                 console.log("User text type is button");
                 console.log(body.entry[0].changes[0].value)
             }
         }
     } else {
+        console.log("coming 6-------")
         console.log("Other logs", body.entry[0].changes[0]);
     }
 });
