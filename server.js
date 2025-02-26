@@ -45,6 +45,7 @@ app.post('/webhook', express.json(), async (req, res) => {
             switch (true) {
                 case /hi/i.test(userText): // Add your logic here for when the user text is "hi"
                     try {
+                        console.log("coing to send greetings template");
                         const resp = await sendGreetingsTemplate(process.env.RECIEVER_NO);
                         console.log(resp);
                         res.sendStatus(200);
