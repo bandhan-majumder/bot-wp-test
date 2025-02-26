@@ -36,7 +36,9 @@ app.post('/webhook', express.json(), async (req, res) => {
     let body = req.body;
     if(body.entry[0].changes[0].value.messages){
         console.log("Change is: ", JSON.stringify(body.entry[0].changes[0]));
-        const userText = JSON.stringify(body.entry[0].changes[0].value.messages[0].message.text);
+        const userTextType = JSON.stringify(body.entry[0].changes[0].value.messages[0].type);
+        console.log("User text type is: ", userTextType);
+        const userText = JSON.stringify(body.entry[0].changes[0].value.messages[0].text.body);
         console.log("User text is: ", userText);
     } else {
         console.log("Other logs")
