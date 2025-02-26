@@ -36,14 +36,14 @@ app.post('/webhook', express.json(), async (req, res) => {
     let body = req.body;
     // check if messages exists in the response or not
     if (body.entry[0].changes[0].value.messages) {
-        const userTextType = JSON.stringify(body.entry[0].changes[0].value.messages[0].type);
+        const userTextType = body.entry[0].changes[0].value.messages[0].type;
         console.log("User text type is: ", userTextType);
         const userText = JSON.stringify(body.entry[0].changes[0].value.messages[0].text.body);
         console.log("User text is: ", userText);
 
-        console.log(userTextType.trim().toString() === "text");
+        console.log(userTextType === "text");
         console.log(typeof userTextType);
-        console.log(userTextType.toString() === "text");
+        console.log(userTextType === "text");
 
         console.log("coming 1-------")
         if (userTextType.toString() === "text") {
