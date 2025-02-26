@@ -42,7 +42,7 @@ app.post('/webhook', express.json(), async (req, res) => {
         console.log("User text is: ", userText);
 
         console.log("coming 1-------")
-        if (userTextType === "text") {
+        if (userTextType.toString() === "text") {
             console.log("coming 2-------")
             switch (true) {
                 case /hi/i.test(userText): // Add your logic here for when the user text is "hi"
