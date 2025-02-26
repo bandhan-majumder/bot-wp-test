@@ -60,8 +60,7 @@ app.post('/webhook', express.json(), async (req, res) => {
             console.log(body.entry[0].changes[0].value)
         }
     } else {
-        console.log("coming 6-------")
-        console.log("Other logs", body.entry[0].changes[0]);
+        console.log("other logs");
     }
 });
 
