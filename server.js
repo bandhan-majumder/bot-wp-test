@@ -1,8 +1,6 @@
 const express = require('express');
 const app = express();
 const VERIFY_TOKEN = "your_unique_verify_token";
-const axios = require('axios');
-require('dotenv').config();
 
 // import the templates
 const sendGreetingsTemplate = require('./template/greetings.js');

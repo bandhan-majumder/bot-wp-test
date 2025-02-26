@@ -1,4 +1,5 @@
 const axios = require('axios');
+const constants = require('../constants.js');
 
 module.exports = async function sendFinalBookingMsgTemplate(recpNo, refNo) {
     try {
@@ -6,7 +7,7 @@ module.exports = async function sendFinalBookingMsgTemplate(recpNo, refNo) {
             method: 'POST',
             url: 'https://graph.facebook.com/v22.0/572643735931375/messages',
             headers: {
-                'Authorization': `Bearer ${process.env.TOKEN}`,
+                'Authorization': `Bearer ${constants.TOKEN}`,
                 'Content-Type': 'application/json'
             },
             data: {
