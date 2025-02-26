@@ -34,36 +34,46 @@ app.get('/health', (req, res) => {
 
 app.post('/webhook', express.json(), async (req, res) => {
     let body = req.body;
-    if(body.entry[0].changes[0].value.messages){
-        console.log("Change is: ", JSON.stringify(body.entry[0].changes[0]));
+    // check if messages exists in the response or not
+    if (body.entry[0].changes[0].value.messages) {
         const userTextType = JSON.stringify(body.entry[0].changes[0].value.messages[0].type);
         console.log("User text type is: ", userTextType);
         const userText = JSON.stringify(body.entry[0].changes[0].value.messages[0].text.body);
         console.log("User text is: ", userText);
-    } else {
-        console.log("Other logs")
-    }
 
-    if (body.object) {
-        if (body.entry &&
-            body.entry[0].changes &&
-            body.entry[0].changes[0].value.messages &&
-            body.entry[0].changes[0].value.messages[0]
-        ) {
-            try{
-                // TODO: recpNo will be passed dynamically
-                const resp  = await sendGreetingsTemplate(process.env.RECIEVER_NO);
-                console.log(resp);
-            } catch (e) {
-                console.log("error in sending response", e);
+        if (userTextType === "text") {
+            switch (true) {
+                case /hi/i.test(userText): // Add your logic here for when the user text is "hi"
+                    try {
+                        const resp = await sendGreetingsTemplate(process.env.RECIEVER_NO);
+                        console.log(resp);
+                        res.sendStatus(200);
+                    } catch (e) {
+                        console.log("Error in sending response", e);
+                        res.sendStatus(404);
+                    }
+                    break;
+                case /hello/i.test(userText):
+                    try {
+                        const resp = await sendGreetingsTemplate(process.env.RECIEVER_NO);
+                        console.log(resp);
+                        res.sendStatus(200);
+                    } catch (e) {
+                        console.log("Error in sending response", e);
+                        res.sendStatus(404);
+                    }
+                    break;
+                default:
+                    break;
             }
-
-            res.sendStatus(200);
         } else {
-            res.sendStatus(404);
+            if (userTextType === "button"){
+                console.log("User text type is button");
+                console.log(body.entry[0].changes[0].value)
+            }
         }
     } else {
-        res.sendStatus(404);
+        console.log("Other logs", body.entry[0].changes[0]);
     }
 });
 
