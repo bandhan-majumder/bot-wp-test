@@ -10,7 +10,7 @@ const sendAirportDropoffSelectionTemplate = require('./template/airportDropoffSe
 const sendFromAirportPickupSelectionTemplate = require('./template/fromAirportPickupSelection.js');
 const sendFinalBookingMsgTemplate = require('./template/finalBookingMsg.js');
 const sendServicesOptionTemplate = require('./template/servicesOption.js');
-const { default: axios } = require('axios');
+const axios = require('axios');
 
 app.get('/webhook', (req, res) => {
     let mode = req.query["hub.mode"];
@@ -63,10 +63,10 @@ app.post('/webhook', express.json(), async (req, res) => {
                 const userInputlocation = userText.split(/pick:/i)[1];
 
                 // get all the possible locations
-                const possibleLocationJson = axios.get(`https://api.olamaps.io/places/v1/autocomplete?input=${userInputlocation}&location=12.9705675,77.6325204&api_key=${process.env.OLAMAPS_API_KEY}`);
+                const possibleLocationJson = await axios.get(`https://api.olamaps.io/places/v1/autocomplete?input=${userInputlocation}&location=12.9705675,77.6325204&api_key=${process.env.OLAMAPS_API_KEY}`);
                 const locations = possibleLocationJson.predictions.map(prediction => prediction.description);
 
-                console.log("All the locations are: ", locations);
+                console.log("All the locations are: ", possibleLocationJson);
             }
         }
 
