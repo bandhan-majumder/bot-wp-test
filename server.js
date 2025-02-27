@@ -9,6 +9,7 @@ const sendAirportPickupConfirmationTemplate = require('./template/airportPickupC
 const sendAirportDropoffSelectionTemplate = require('./template/airportDropoffSelection.js');
 const sendAirportPickupTemplate = require('./template/airportPickupSelection.js');
 const sendFinalBookingMsgTemplate = require('./template/finalBookingMsg.js');
+const sendServicesOptionTemplate = require('./template/servicesOption.js');
 
 app.get('/webhook', (req, res) => {
     let mode = req.query["hub.mode"];
@@ -61,6 +62,17 @@ app.post('/webhook', express.json(), async (req, res) => {
             if (templateReply.match(/start booking/i)) {
                 try {
                     const resp = await sendServiceSelectionTemplate(process.env.RECIEVER_NO);
+                    console.log(resp);
+                    res.sendStatus(200);
+                } catch (e) {
+                    console.log("Error in sending response", e);
+                    res.sendStatus(404);
+                }
+            }
+
+            if (templateReply.match(/book a ride/i)) {
+                try {
+                    const resp = await sendServicesOptionTemplate(process.env.RECIEVER_NO);
                     console.log(resp);
                     res.sendStatus(200);
                 } catch (e) {
