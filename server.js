@@ -55,11 +55,7 @@ app.post('/webhook', express.json(), async (req, res) => {
 
         if (userTextType.toString() === "button") {
             // user interacts with the template
-            console.log("Inside button: ")
-            console.log("User text type is button");
-            console.log("Value is: ", body.entry[0].changes[0].value.contacts);
-            console.log("Message is: ", body.entry[0].changes[0].value.messages);
-            console.log("Body is: ", body)
+            console.log("Message is: ", body.entry[0].changes[0].value.messages[0].button.payload);
         }
     } else {
         console.log("other logs");
