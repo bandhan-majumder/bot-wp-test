@@ -1,7 +1,7 @@
 const axios = require('axios');
 const constants = require('../constants.js');
 
-module.exports = async function sendAirportPickupTemplate(recpNo) {
+module.exports = async function sendFromAirportPickupTemplate(recpNo) {
     try {
         const response = await axios({
             method: 'POST',
@@ -15,7 +15,7 @@ module.exports = async function sendAirportPickupTemplate(recpNo) {
                 to: recpNo,
                 type: "template",
                 template: {
-                    name: "to_airport_pickup",
+                    name: "airport_pickup_options",
                     language: {
                         code: "en"
                     }

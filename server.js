@@ -7,7 +7,7 @@ const sendGreetingsTemplate = require('./template/greetings.js');
 const sendServiceSelectionTemplate = require('./template/serviceSelection.js');
 const sendAirportPickupConfirmationTemplate = require('./template/airportPickupConfirmation.js');
 const sendAirportDropoffSelectionTemplate = require('./template/airportDropoffSelection.js');
-const sendAirportPickupTemplate = require('./template/airportPickupSelection.js');
+const sendFromAirportPickupSelectionTemplate = require('./template/fromAirportPickupSelection.js');
 const sendFinalBookingMsgTemplate = require('./template/finalBookingMsg.js');
 const sendServicesOptionTemplate = require('./template/servicesOption.js');
 
@@ -44,21 +44,24 @@ app.post('/webhook', express.json(), async (req, res) => {
         if (userTextType.toString() === "text") {
             // extract the user text
             const userText = JSON.stringify(body.entry[0].changes[0].value.messages[0].text.body);
-            try {
-                const resp = await sendGreetingsTemplate(process.env.RECIEVER_NO);
-                console.log(resp);
-                res.sendStatus(200);
-            } catch (e) {
-                console.log("Error in sending response", e);
-                res.sendStatus(404);
+            if (userText.match(/hi/i) || userText.match(/hello/i)) {
+                try {
+                    const resp = await sendGreetingsTemplate(process.env.RECIEVER_NO);
+                    console.log(resp);
+                    res.sendStatus(200);
+                } catch (e) {
+                    console.log("Error in sending response", e);
+                    res.sendStatus(404);
+                }
             }
         }
 
+        // configure template responses
         if (userTextType.toString() === "button") {
             // user interacts with the template
             const templateReply = body.entry[0].changes[0].value.messages[0].button.payload;
 
-            // user selects to start booking
+            // user selects to which service to book
             if (templateReply.match(/start booking/i)) {
                 try {
                     const resp = await sendServiceSelectionTemplate(process.env.RECIEVER_NO);
@@ -70,9 +73,34 @@ app.post('/webhook', express.json(), async (req, res) => {
                 }
             }
 
+            // user selects to book a ride from airport or from a location
             if (templateReply.match(/book a ride/i)) {
                 try {
                     const resp = await sendServicesOptionTemplate(process.env.RECIEVER_NO);
+                    console.log(resp);
+                    res.sendStatus(200);
+                } catch (e) {
+                    console.log("Error in sending response", e);
+                    res.sendStatus(404);
+                }
+            }
+
+            // user needs a home ride
+            if (templateReply.match(/need a ride home!/i)) {
+                try {
+                    const resp = await sendFromAirportPickupSelectionTemplate(process.env.RECIEVER_NO);
+                    console.log(resp);
+                    res.sendStatus(200);
+                } catch (e) {
+                    console.log("Error in sending response", e);
+                    res.sendStatus(404);
+                }
+            }
+
+            // user selects a terminal to be picked up from
+            if (templateReply.match(/terminal 1/i) || templateReply.match(/terminal 2/i)) {
+                try {
+                    const resp = await sendAirportPickupConfirmationTemplate(process.env.RECIEVER_NO, templateReply);
                     console.log(resp);
                     res.sendStatus(200);
                 } catch (e) {
