@@ -57,7 +57,7 @@ app.post('/webhook', express.json(), async (req, res) => {
             // user interacts with the template
             console.log("Inside button: ")
             console.log("User text type is button");
-            console.log("Entry is: ", body.entry[0])
+            console.log("Changes is: ", body.entry[0].changes)
             console.log("Body is: ", body)
         }
     } else {
