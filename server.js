@@ -10,6 +10,7 @@ const sendAirportDropoffSelectionTemplate = require('./template/airportDropoffSe
 const sendFromAirportPickupSelectionTemplate = require('./template/fromAirportPickupSelection.js');
 const sendFinalBookingMsgTemplate = require('./template/finalBookingMsg.js');
 const sendServicesOptionTemplate = require('./template/servicesOption.js');
+const { default: axios } = require('axios');
 
 app.get('/webhook', (req, res) => {
     let mode = req.query["hub.mode"];
@@ -44,6 +45,8 @@ app.post('/webhook', express.json(), async (req, res) => {
         if (userTextType.toString() === "text") {
             // extract the user text
             const userText = JSON.stringify(body.entry[0].changes[0].value.messages[0].text.body);
+
+            // greet user if user sends a greeting message
             if (userText.match(/hi/i) || userText.match(/hello/i)) {
                 try {
                     const resp = await sendGreetingsTemplate(process.env.RECIEVER_NO);
@@ -53,6 +56,17 @@ app.post('/webhook', express.json(), async (req, res) => {
                     console.log("Error in sending response", e);
                     res.sendStatus(404);
                 }
+            }
+
+            // user puts location for drop off/picup
+            if (userText.startsWith('pick:')) {
+                const userInputlocation = userText.split(/pick:/i)[1];
+
+                // get all the possible locations
+                const possibleLocationJson = axios.get(`https://api.olamaps.io/places/v1/autocomplete?input=${userInputlocation}&location=12.9705675,77.6325204&api_key=${process.env.OLAMAPS_API_KEY}`);
+                const locations = possibleLocationJson.predictions.map(prediction => prediction.description);
+
+                console.log("All the locations are: ", locations);
             }
         }
 
