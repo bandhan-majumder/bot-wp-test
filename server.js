@@ -60,7 +60,7 @@ app.post('/webhook', express.json(), async (req, res) => {
         if (userTextType.toString() === "button") {
             // user interacts with the template
             const templateReply = body.entry[0].changes[0].value.messages[0].button.payload;
-
+            console.log("Template reply is: ", templateReply);
             // user selects to which service to book
             if (templateReply.match(/start booking/i)) {
                 try {
