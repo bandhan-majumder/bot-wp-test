@@ -59,7 +59,7 @@ app.post('/webhook', express.json(), async (req, res) => {
             }
 
             // user puts location for drop off/picup
-            if (userText.startsWith(/pick:/i)) {
+            if (userText.startsWith('pick:' || 'Pick: ')) {
                 console.log("coming1 ----------------------------------");
                 const userInputlocation = userText.split(/pick:/i)[1];
                 console.log("coming2 ----------------------------------");
