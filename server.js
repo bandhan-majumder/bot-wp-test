@@ -59,12 +59,17 @@ app.post('/webhook', express.json(), async (req, res) => {
             }
 
             // user puts location for drop off/picup
-            if (userText.startsWith('pick:')) {
+            if (userText.startsWith(/pick:/i)) {
+                console.log("coming1 ----------------------------------");
                 const userInputlocation = userText.split(/pick:/i)[1];
+                console.log("coming2 ----------------------------------");
+                console.log("User input location: ", userInputlocation)
 
                 // get all the possible locations
                 const possibleLocationJson = await axios.get(`https://api.olamaps.io/places/v1/autocomplete?input=${userInputlocation}&location=12.9705675,77.6325204&api_key=${process.env.OLAMAPS_API_KEY}`);
+                console.log("coming3 ----------------------------------");
                 const locations = possibleLocationJson.predictions.map(prediction => prediction.description);
+                console.log("coming4 ----------------------------------");
 
                 console.log("All the locations are: ", possibleLocationJson);
             }
