@@ -55,7 +55,19 @@ app.post('/webhook', express.json(), async (req, res) => {
 
         if (userTextType.toString() === "button") {
             // user interacts with the template
-            console.log("Message is: ", body.entry[0].changes[0].value.messages[0].button.payload);
+            const templateReply = body.entry[0].changes[0].value.messages[0].button.payload;
+
+            // user selects to start booking
+            if (templateReply.match(/start booking/i)) {
+                try {
+                    const resp = await sendServiceSelectionTemplate(process.env.RECIEVER_NO);
+                    console.log(resp);
+                    res.sendStatus(200);
+                } catch (e) {
+                    console.log("Error in sending response", e);
+                    res.sendStatus(404);
+                }
+            }
         }
     } else {
         console.log("other logs");
