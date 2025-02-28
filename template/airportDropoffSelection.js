@@ -1,5 +1,5 @@
 const axios = require('axios');
-0
+const constants = require('../constants.js');
 
 module.exports = async function sendAirportDropoffSelectionTemplate(recpNo) {
     try {
