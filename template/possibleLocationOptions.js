@@ -3,6 +3,8 @@ const constants = require('../constants.js');
 
 module.exports = async function sendPossibleLocationTemplate(recpNo, allPossibleLocations) {
     // format all the possible locations into the required format
+    console.log("All local possible locations: ", allPossibleLocations);
+    console.log("type of possible locations is: ", typeof allPossibleLocations);
     try {
         const components = allPossibleLocations.map(location => ({
             type: "body",

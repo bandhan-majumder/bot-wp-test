@@ -141,7 +141,6 @@ app.post('/webhook', express.json(), async (req, res) => {
 
         // Get current user state from Redis
         let currentState = await getUserState(userPhone) || userStates.INITIAL;
-        console.log("Current user state:", currentState);
 
         // Handle text messages
         if (userTextType.toString() === "text") {
