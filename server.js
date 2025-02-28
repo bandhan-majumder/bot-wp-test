@@ -206,8 +206,14 @@ app.post('/webhook', express.json(), async (req, res) => {
             //     console.log("Unhandled state/text combination");
             //     res.sendStatus(200);
             // }
+            
+            // Handle reset command
             else if (userText.match(/start again/i)) {
+                console.log(`data is reset for ${userPhone} : ${await getAllUserData(userPhone)}`);
                 await resetUserData(userPhone);
+                await sendGreetingsTemplate(userPhone);
+                await updateUserState(userPhone, userStates.INITIAL);
+                res.sendStatus(200);
             }
         }
         // Handle button interactions
