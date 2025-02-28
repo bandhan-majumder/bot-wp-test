@@ -39,6 +39,7 @@ const sendAirportDropoffSelectionTemplate = require('./template/airportDropoffSe
 const sendFromAirportPickupSelectionTemplate = require('./template/fromAirportPickupSelection.js');
 const sendFinalBookingMsgTemplate = require('./template/finalBookingMsg.js');
 const sendServicesOptionTemplate = require('./template/servicesOption.js');
+const sendPossibleLocationTemplate = require('./template/possibleLocationOptions.js');
 const axios = require('axios');
 
 /**
@@ -166,23 +167,19 @@ app.post('/webhook', express.json(), async (req, res) => {
 
                     await saveUserData(userPhone, 'pickupLocation', pickupLocation);
 
+                    // Get possible locations based on user input
                     const possibleLocations = getLocation(pickupLocation);
 
-                    console.log("All possible locations are: ", possibleLocations)
-                    // if (possibleLocationJson.data && possibleLocationJson.data.predictions) {
-                    //     const locations = possibleLocationJson.data.predictions.map(prediction => prediction.description);
-                    //     console.log("Possible locations:", locations);
-
-                    //     // Save the first/most relevant location
-                    //     if (locations.length > 0) {
-                    //         await saveUserData(userPhone, 'pickupLocationFormatted', locations[0]);
-                    //     }
-                    // }
-
-                    // // Move to asking for dropoff location
-                    // await updateUserState(userPhone, userStates.ASKING_DROPOFF);
-                    // // Send a message asking for dropoff location
-                    // res.sendStatus(200);
+                    // Send possible locations to user to choose from
+                    try{
+                        const resp = await sendPossibleLocationTemplate(userPhone, possibleLocations);
+                        await updateUserState(userPhone, userStates.ASKING_PICKUP);
+                        console.log(resp);
+                        res.sendStatus(200);
+                    } catch (e) {
+                        console.log("Error in sending response in pickup selection", e);
+                        res.sendStatus(404);
+                    }
                 } catch (e) {
                     console.log("Error processing pickup location:", e);
                     res.sendStatus(404);
