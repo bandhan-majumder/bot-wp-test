@@ -167,7 +167,7 @@ app.post('/webhook', express.json(), async (req, res) => {
                     await saveUserData(userPhone, 'pickupLocation', pickupLocation);
 
                     // Get possible locations based on user input
-                    const possibleLocations = getLocation(pickupLocation);
+                    const possibleLocations = await getLocation(pickupLocation);
 
                     // Send possible locations to user to choose from
                     try{
