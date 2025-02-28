@@ -3,6 +3,7 @@ const app = express();
 const VERIFY_TOKEN = "your_unique_verify_token";
 const Redis = require('ioredis');
 const constants = require('./constants.js');
+const getLocations = require('./apis/maps.js');
 
 const redis = new Redis(
     constants.REDIS_URL,
@@ -118,10 +119,9 @@ app.post('/webhook', express.json(), async (req, res) => {
 
                     await saveUserData(userPhone, 'pickupLocation', pickupLocation);
 
-                    // Get all the possible locations (your existing code)
-                    const possibleLocationJson = await axios.get(`https://api.olamaps.io/places/v1/autocomplete?input=${pickupLocation}&location=12.9705675,77.6325204&api_key=${process.env.OLAMAPS_API_KEY}`);
+                    const possibleLocations = await getLocations(pickupLocation.toString().trim());
 
-                    console.log("All possible locations are: ", possibleLocationJson)
+                    console.log("All possible locations are: ", possibleLocations)
                     // if (possibleLocationJson.data && possibleLocationJson.data.predictions) {
                     //     const locations = possibleLocationJson.data.predictions.map(prediction => prediction.description);
                     //     console.log("Possible locations:", locations);
