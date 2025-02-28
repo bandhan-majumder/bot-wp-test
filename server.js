@@ -3,7 +3,7 @@ const app = express();
 const VERIFY_TOKEN = "your_unique_verify_token";
 const Redis = require('ioredis');
 const constants = require('./constants.js');
-const getLocations = require('./apis/maps.js');
+const { getLocations } = require('./apis/maps.js');
 
 const redis = new Redis(
     constants.REDIS_URL,
