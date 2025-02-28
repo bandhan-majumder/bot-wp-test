@@ -41,7 +41,46 @@ const sendFinalBookingMsgTemplate = require('./template/finalBookingMsg.js');
 const sendServicesOptionTemplate = require('./template/servicesOption.js');
 const axios = require('axios');
 
-// Redis helper functions
+/**
+ * This module provides functions to interact with user state and data stored in Redis.
+ * 
+ * Functions:
+ * 
+ * 1. getUserState(userPhone):
+ *    - Retrieves the state of a user based on their phone number.
+ *    - @param {string} userPhone - The phone number of the user.
+ *    - @returns {Promise<string>} - The state of the user.
+ * 
+ * 2. updateUserState(userPhone, newState):
+ *    - Updates the state of a user based on their phone number.
+ *    - @param {string} userPhone - The phone number of the user.
+ *    - @param {string} newState - The new state to set for the user.
+ *    - @returns {Promise<string>} - The result of the update operation.
+ * 
+ * 3. saveUserData(userPhone, key, value):
+ *    - Saves a key-value pair in the user's data hash.
+ *    - @param {string} userPhone - The phone number of the user.
+ *    - @param {string} key - The key to save in the user's data.
+ *    - @param {string} value - The value to save in the user's data.
+ *    - @returns {Promise<number>} - The result of the save operation.
+ * 
+ * 4. getUserData(userPhone, key):
+ *    - Retrieves a value from the user's data hash based on a key.
+ *    - @param {string} userPhone - The phone number of the user.
+ *    - @param {string} key - The key to retrieve from the user's data.
+ *    - @returns {Promise<string>} - The value associated with the key.
+ * 
+ * 5. getAllUserData(userPhone):
+ *    - Retrieves all key-value pairs from the user's data hash.
+ *    - @param {string} userPhone - The phone number of the user.
+ *    - @returns {Promise<Object>} - An object containing all key-value pairs.
+ * 
+ * 6. resetUserData(userPhone):
+ *    - Deletes the user's state and data from Redis.
+ *    - @param {string} userPhone - The phone number of the user.
+ *    - @returns {Promise<void>} - The result of the delete operation.
+ */
+
 async function getUserState(userPhone) {
     return await redis.get(`user:${userPhone}:state`);
 }
@@ -60,6 +99,11 @@ async function getUserData(userPhone, key) {
 
 async function getAllUserData(userPhone) {
     return await redis.hgetall(`user:${userPhone}:data`);
+}
+
+async function resetUserData(userPhone) {
+    await redis.del(`user:${userPhone}:state`);
+    await redis.del(`user:${userPhone}:data`);
 }
 
 // Route handlers
@@ -117,9 +161,7 @@ app.post('/webhook', express.json(), async (req, res) => {
             }
             // Handle pickup location input
             else if (currentState === userStates.ASKING_PICKUP) {
-                console.log("Coming inside pickupppp....");
                 try {
-                    // Format could be "pick: location" or just the location based on your current state
                     const pickupLocation = userText;
 
                     await saveUserData(userPhone, 'pickupLocation', pickupLocation);
@@ -168,6 +210,9 @@ app.post('/webhook', express.json(), async (req, res) => {
             //     console.log("Unhandled state/text combination");
             //     res.sendStatus(200);
             // }
+            else if (userText.match(/start again/i)) {
+                await resetUserData(userPhone);
+            }
         }
         // Handle button interactions
         else if (userTextType.toString() === "button") {
