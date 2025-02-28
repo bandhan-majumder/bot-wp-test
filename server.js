@@ -5,6 +5,11 @@ const Redis = require('ioredis');
 const constants = require('./constants.js');
 const { getLocations } = require('./apis/maps.js');
 
+const getLocation = async (input) => {
+    const possibleLocationJson = await getLocations(input);
+    console.log("Possible locations:", possibleLocationJson);
+};
+
 const redis = new Redis(
     constants.REDIS_URL,
     {
@@ -119,7 +124,7 @@ app.post('/webhook', express.json(), async (req, res) => {
 
                     await saveUserData(userPhone, 'pickupLocation', pickupLocation);
 
-                    const possibleLocations = await getLocations(pickupLocation.toString().trim());
+                    const possibleLocations = getLocation(pickupLocation);
 
                     console.log("All possible locations are: ", possibleLocations)
                     // if (possibleLocationJson.data && possibleLocationJson.data.predictions) {
