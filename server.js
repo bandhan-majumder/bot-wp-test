@@ -111,6 +111,7 @@ app.post('/webhook', express.json(), async (req, res) => {
             }
             // Handle pickup location input
             else if (currentState === userStates.ASKING_PICKUP) {
+                console.log("Coming inside pickupppp....");
                 try {
                     // Format could be "pick: location" or just the location based on your current state
                     const pickupLocation = userText;
@@ -118,7 +119,7 @@ app.post('/webhook', express.json(), async (req, res) => {
                     await saveUserData(userPhone, 'pickupLocation', pickupLocation);
 
                     // Get all the possible locations (your existing code)
-                    const possibleLocationJson = await axios.get(`https://api.olamaps.io/places/v1/autocomplete?input=${encodeURIComponent(pickupLocation)}&location=12.9705675,77.6325204&api_key=${process.env.OLAMAPS_API_KEY}`);
+                    const possibleLocationJson = await axios.get(`https://api.olamaps.io/places/v1/autocomplete?input=${pickupLocation}&location=12.9705675,77.6325204&api_key=${process.env.OLAMAPS_API_KEY}`);
 
                     console.log("All possible locations are: ", possibleLocationJson)
                     // if (possibleLocationJson.data && possibleLocationJson.data.predictions) {
