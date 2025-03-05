@@ -26,7 +26,7 @@ module.exports = async function sendPossibleLocationTemplate(recpNo, allPossible
                 to: recpNo,
                 type: "template",
                 template: {
-                    name: "select_location",
+                    name: "select_location_5",
                     language: {
                         code: "en"
                     },
