@@ -166,11 +166,10 @@ app.post('/webhook', express.json(), async (req, res) => {
 
                     await saveUserData(userPhone, 'pickupLocation', pickupLocation);
 
-                    // Get possible locations based on user input
-                    const possibleLocations = await getLocation(pickupLocation);
-
-                    // Send possible locations to user to choose from
-                    try{
+                    try {
+                        console.log("Pickup  location is: ", pickupLocation);
+                        const possibleLocations = await getLocation(pickupLocation);
+                        console.log("Possible locations:", possibleLocations);
                         const resp = await sendPossibleLocationTemplate(userPhone, possibleLocations);
                         await updateUserState(userPhone, userStates.ASKING_PICKUP);
                         console.log(resp);
@@ -206,7 +205,7 @@ app.post('/webhook', express.json(), async (req, res) => {
             //     console.log("Unhandled state/text combination");
             //     res.sendStatus(200);
             // }
-            
+
             // Handle reset command
             else if (userText.match(/start again/i)) {
                 console.log(`data is reset for ${userPhone} : ${await getAllUserData(userPhone)}`);
