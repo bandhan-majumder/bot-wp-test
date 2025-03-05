@@ -30,7 +30,9 @@ const userStates = {
     ASKING_DROPOFF: 'asking_dropoff',
     TERMINAL_SELECTION: 'terminal_selection',
     CONFIRMING: 'confirming',
-    COMPLETED: 'completed'
+    COMPLETED: 'completed',
+    CONFIRMING_TIME: 'confirming_time',
+    CONFIRMING_BOOKING: 'confirming_booking'
 };
 
 // Import the templates
@@ -43,6 +45,7 @@ const sendFinalBookingMsgTemplate = require('./template/finalBookingMsg.js');
 const sendServicesOptionTemplate = require('./template/servicesOption.js');
 const sendPossibleLocationTemplate = require('./template/possibleLocationOptions.js');
 const sendLocationConfirmTemplate = require('./template/confirmLocation.js');
+const sendBookingConfirmTemplate = require('./template/bookingConfirm.js');
 const axios = require('axios');
 
 /**
@@ -216,6 +219,7 @@ app.post('/webhook', express.json(), async (req, res) => {
                         await saveUserData(userPhone, 'confirmedPickupLocation', selectedLocation);
                         const resp = await sendLocationConfirmTemplate(userPhone, selectedLocation.label);
                         console.log("User state is: ", await getUserState(userPhone));
+                        await updateUserState(userPhone, userStates.CONFIRMING_TIME);
                         console.log(resp);
                         res.sendStatus(200);
                     } catch (e) {
@@ -225,6 +229,21 @@ app.post('/webhook', express.json(), async (req, res) => {
                 } else {
                     console.error(userPhone, "Invalid selection. Please select a number between 1 and 5.");
                     res.sendStatus(200);
+                }
+            }
+            else if (currentState === userStates.CONFIRMING_TIME) {
+                const userTime = userText;
+                await saveUserData(userPhone, 'time', userTime);
+                try {
+                    const resp = await sendFinalBookingMsgTemplate(userPhone, userData);
+                    await updateUserState(userPhone, userStates.CONFIRMING_BOOKING);
+                    const userData = await getAllUserData(userPhone);
+                    console.log("User data is: ", userData);
+                    console.log(resp);
+                    res.sendStatus(200);
+                } catch (e) {
+                    console.log("Error in sending response", e);
+                    res.sendStatus(404);
                 }
             }
         }
