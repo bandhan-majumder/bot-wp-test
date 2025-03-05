@@ -199,13 +199,13 @@ app.post('/webhook', express.json(), async (req, res) => {
             }
             // confirm pickup location input
             else if (currentState === userStates.CONFIRMING_PICKUP) {
-                const selectedOption = parseInt(userText, 10);
+                const selectedOption = parseInt(JSON.parse(userText));
                 if (selectedOption >= 1 && selectedOption <= 5) {
                     try {
                         const possibleLocations = await redis.yget(`user:${userPhone}:possibleLocations`);
                         const selectedLocation = JSON.parse(possibleLocations)[selectedOption - 1];
+                        console.log(selectedLocation);
                         await saveUserData(userPhone, 'confirmedPickupLocation', selectedLocation);
-                        await updateUserState(userPhone, userStates.ASKING_DROPOFF);
                         const resp = await sendLocationConfirmTemplate(userPhone, selectedLocation);
                         console.log("User state is: ", await getUserState(userPhone));
                         console.log(resp);
