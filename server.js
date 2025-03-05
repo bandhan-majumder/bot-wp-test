@@ -111,7 +111,7 @@ async function resetUserData(userPhone) {
 }
 
 async function userPossibleLocations(userPhone, allPossibleLocations) {
-    await redis.hset(`user:${userPhone}:possibleLocations`, allPossibleLocations);
+    await redis.set(`user:${userPhone}:possibleLocations`, JSON.stringify(allPossibleLocations));
 }
 
 // Route handlers
@@ -202,7 +202,7 @@ app.post('/webhook', express.json(), async (req, res) => {
                 const selectedOption = parseInt(userText, 10);
                 if (selectedOption >= 1 && selectedOption <= 5) {
                     try {
-                        const possibleLocations = await redis.hget(`user:${userPhone}:possibleLocations`);
+                        const possibleLocations = await redis.yget(`user:${userPhone}:possibleLocations`);
                         const selectedLocation = JSON.parse(possibleLocations)[selectedOption - 1];
                         await saveUserData(userPhone, 'confirmedPickupLocation', selectedLocation);
                         await updateUserState(userPhone, userStates.ASKING_DROPOFF);
