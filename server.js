@@ -202,7 +202,7 @@ app.post('/webhook', express.json(), async (req, res) => {
                 const selectedOption = parseInt(JSON.parse(userText));
                 if (selectedOption >= 1 && selectedOption <= 5) {
                     try {
-                        const possibleLocations = await redis.yget(`user:${userPhone}:possibleLocations`);
+                        const possibleLocations = await redis.get(`user:${userPhone}:possibleLocations`);
                         const selectedLocation = JSON.parse(possibleLocations)[selectedOption - 1];
                         console.log(selectedLocation);
                         await saveUserData(userPhone, 'confirmedPickupLocation', selectedLocation);
