@@ -214,7 +214,7 @@ app.post('/webhook', express.json(), async (req, res) => {
                         const selectedLocation = JSON.parse(possibleLocations)[selectedOption - 1];
                         console.log(selectedLocation);
                         await saveUserData(userPhone, 'confirmedPickupLocation', selectedLocation);
-                        const resp = await sendLocationConfirmTemplate(userPhone, selectedLocation);
+                        const resp = await sendLocationConfirmTemplate(userPhone, selectedLocation.label);
                         console.log("User state is: ", await getUserState(userPhone));
                         console.log(resp);
                         res.sendStatus(200);
