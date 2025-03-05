@@ -8,6 +8,7 @@ const { getLocations } = require('./apis/maps.js');
 const getLocation = async (input) => {
     const possibleLocationJson = await getLocations(input);
     console.log("Possible locations:", possibleLocationJson);
+    return possibleLocationJson;
 };
 
 const redis = new Redis(
