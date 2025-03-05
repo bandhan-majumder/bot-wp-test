@@ -3,6 +3,16 @@ const constants = require('../constants.js');
 
 module.exports = async function sendPossibleLocationTemplate(recpNo, allPossibleLocations) {
     try {
+        if (!Array.isArray(allPossibleLocations)) {
+            throw new Error("Expected an array but received: " + JSON.stringify(allPossibleLocations));
+        }
+
+        const parameters = allPossibleLocations.slice(0, 5).map(location => {
+            if (!location || typeof location.value !== "string") {
+                throw new Error("Invalid location object: " + JSON.stringify(location));
+            }
+            return { type: "text", text: location.value };
+        });
         const response = await axios({
             method: 'POST',
             url: 'https://graph.facebook.com/v21.0/572643735931375/messages',
@@ -21,22 +31,7 @@ module.exports = async function sendPossibleLocationTemplate(recpNo, allPossible
                     },
                     components: [{
                         type: "body",
-                        parameters: [{
-                            type: "text",
-                            text: "234234"
-                        }, {
-                            type: "text",
-                            text: "234234"
-                        }, {
-                            type: "text",
-                            text: "234234"
-                        }, {
-                            type: "text",
-                            text: "234234"
-                        }, {
-                            type: "text",
-                            text: "234234"
-                        }]
+                        parameters: parameters
                     }]
                 }
             }
