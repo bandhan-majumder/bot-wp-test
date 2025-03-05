@@ -17,7 +17,7 @@ module.exports = async function sendLocationConfirmTemplate(recpNo, location) {
                 template: {
                     name: "dropoff_location",
                     language: {
-                        code: "en_US"
+                        code: "en"
                     },
                     components: [{
                         type: "body",
