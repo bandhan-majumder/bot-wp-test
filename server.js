@@ -94,7 +94,15 @@ async function updateUserState(userPhone, newState) {
 }
 
 async function saveUserData(userPhone, key, value) {
-    return await redis.hset(`user:${userPhone}:data`, key, value);
+    try {
+        if (typeof value != Object) {
+            return await redis.set(`user:${userPhone}:data`, key, value);
+        } else {
+            return await redis.hset(`user:${userPhone}:data`, key, JSON.stringify(value));
+        }
+    } catch (e) {
+        console.log("Error in saving user data", e);
+    }
 }
 
 async function getUserData(userPhone, key) {
