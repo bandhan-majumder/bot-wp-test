@@ -26,6 +26,7 @@ const userStates = {
     SERVICE_SELECTION: 'service_selection',
     SERVICES_OPTION: 'services_option',
     ASKING_PICKUP: 'asking_pickup',
+    CONFIRMING_PICKUP: 'confirming_pickup',
     ASKING_DROPOFF: 'asking_dropoff',
     TERMINAL_SELECTION: 'terminal_selection',
     CONFIRMING: 'confirming',
@@ -41,6 +42,7 @@ const sendFromAirportPickupSelectionTemplate = require('./template/fromAirportPi
 const sendFinalBookingMsgTemplate = require('./template/finalBookingMsg.js');
 const sendServicesOptionTemplate = require('./template/servicesOption.js');
 const sendPossibleLocationTemplate = require('./template/possibleLocationOptions.js');
+const sendLocationConfirmTemplate = require('./template/confirmLocation.js');
 const axios = require('axios');
 
 /**
@@ -106,6 +108,10 @@ async function getAllUserData(userPhone) {
 async function resetUserData(userPhone) {
     await redis.del(`user:${userPhone}:state`);
     await redis.del(`user:${userPhone}:data`);
+}
+
+async function userPossibleLocations(userPhone, allPossibleLocations) {
+    await redis.hset(`user:${userPhone}:possibleLocations`, allPossibleLocations);
 }
 
 // Route handlers
@@ -176,11 +182,10 @@ app.post('/webhook', express.json(), async (req, res) => {
                     await saveUserData(userPhone, 'pickupLocation', pickupLocation);
 
                     try {
-                        console.log("Pickup  location is: ", pickupLocation);
                         const possibleLocations = await getLocation(pickupLocation);
-                        console.log("Possible locations:", possibleLocations);
+                        await userPossibleLocations(userPhone, possibleLocations);
                         const resp = await sendPossibleLocationTemplate(userPhone, possibleLocations);
-                        await updateUserState(userPhone, userStates.ASKING_PICKUP);
+                        await updateUserState(userPhone, userStates.CONFIRMING_PICKUP); // Update state to confirm pickup location
                         console.log(resp);
                         res.sendStatus(200);
                     } catch (e) {
@@ -192,28 +197,28 @@ app.post('/webhook', express.json(), async (req, res) => {
                     res.sendStatus(404);
                 }
             }
-            // Handle dropoff location
-            // else if (currentState === userStates.ASKING_DROPOFF) {
-            //     try {
-            //         await saveUserData(userPhone, 'dropoffLocation', userText);
-
-            //         // Get the pickup location and ask for confirmation
-            //         const pickupLocation = await getUserData(userPhone, 'pickupLocationFormatted') || await getUserData(userPhone, 'pickupLocation');
-
-            //         await updateUserState(userPhone, userStates.CONFIRMING);
-            //         await sendMessage(userPhone, `Please confirm: Pickup from ${pickupLocation} and dropoff at ${userText}?`);
-            //         res.sendStatus(200);
-            //     } catch (e) {
-            //         console.log("Error processing dropoff location:", e);
-            //         res.sendStatus(404);
-            //     }
-            // }
-            // // Handle other states/text inputs as needed
-            // else {
-            //     // Default response for unhandled states or text
-            //     console.log("Unhandled state/text combination");
-            //     res.sendStatus(200);
-            // }
+            // confirm pickup location input
+            else if (currentState === userStates.CONFIRMING_PICKUP) {
+                const selectedOption = parseInt(userText, 10);
+                if (selectedOption >= 1 && selectedOption <= 5) {
+                    try {
+                        const possibleLocations = await redis.hget(`user:${userPhone}:possibleLocations`);
+                        const selectedLocation = JSON.parse(possibleLocations)[selectedOption - 1];
+                        await saveUserData(userPhone, 'confirmedPickupLocation', selectedLocation);
+                        await updateUserState(userPhone, userStates.ASKING_DROPOFF);
+                        const resp = await sendLocationConfirmTemplate(userPhone, selectedLocation);
+                        console.log("User state is: ", await getUserState(userPhone));
+                        console.log(resp);
+                        res.sendStatus(200);
+                    } catch (e) {
+                        console.log("Error in confirming pickup location", e);
+                        res.sendStatus(404);
+                    }
+                } else {
+                    console.error(userPhone, "Invalid selection. Please select a number between 1 and 5.");
+                    res.sendStatus(200);
+                }
+            }
         }
         // Handle button interactions
         else if (userTextType.toString() === "button") {
@@ -265,33 +270,6 @@ app.post('/webhook', express.json(), async (req, res) => {
                     res.sendStatus(404);
                 }
             }
-            // else if (buttonPayload.match(/confirm/i) && currentState === userStates.CONFIRMING) {
-            //     try {
-            //         // Get all user data to create a final booking
-            //         const userData = await getAllUserData(userPhone);
-
-            //         // Send final booking confirmation
-            //         const resp = await sendFinalBookingMsgTemplate(userPhone, userData);
-            //         await updateUserState(userPhone, userStates.COMPLETED);
-            //         console.log(resp);
-            //         res.sendStatus(200);
-            //     } catch (e) {
-            //         console.log("Error in sending final confirmation", e);
-            //         res.sendStatus(404);
-            //     }
-            // }
-            // else if (buttonPayload.match(/cancel/i) && currentState === userStates.CONFIRMING) {
-            //     try {
-            //         // Reset the state to start over
-            //         await updateUserState(userPhone, userStates.INITIAL);
-            //         await sendMessage(userPhone, "Booking cancelled. Say 'hi' to start over.");
-            //         res.sendStatus(200);
-            //     } catch (e) {
-            //         console.log("Error in cancelling booking", e);
-            //         res.sendStatus(404);
-            //     }
-            // }
-            // Handle other button payloads based on state
         }
     } else {
         console.log("No messages in request or improperly formatted request");
