@@ -2,6 +2,7 @@ const axios = require('axios');
 const constants = require('../constants.js');
 
 async function getLocations(input) {
+    console.log("Total possible combinations are: ", input.length);
     if (Boolean(input)) {
         const response = await axios.get(
             `https://api.olamaps.io/places/v1/autocomplete`, {
