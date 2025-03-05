@@ -148,8 +148,16 @@ app.post('/webhook', express.json(), async (req, res) => {
             // extract the user text
             const userText = JSON.stringify(body.entry[0].changes[0].value.messages[0].text.body);
 
+            // Handle reset command
+            if (JSON.parse(userText).match(/start again/i)) {
+                console.log(`data is reset for ${userPhone} : ${await getAllUserData(userPhone)}`);
+                await resetUserData(userPhone);
+                await sendGreetingsTemplate(userPhone);
+                await updateUserState(userPhone, userStates.INITIAL);
+                res.sendStatus(200);
+            }
             // Handle based on current state and message content
-            if ((userText.match(/hi/i) || userText.match(/hello/i)) && currentState === userStates.INITIAL) {
+            else if ((userText.match(/hi/i) || userText.match(/hello/i)) && currentState === userStates.INITIAL) {
                 try {
                     const resp = await sendGreetingsTemplate(userPhone);
                     await updateUserState(userPhone, userStates.INITIAL);
@@ -206,15 +214,6 @@ app.post('/webhook', express.json(), async (req, res) => {
             //     console.log("Unhandled state/text combination");
             //     res.sendStatus(200);
             // }
-
-            // Handle reset command
-            else if (JSON.parse(userText).match(/start again/i)) {
-                console.log(`data is reset for ${userPhone} : ${await getAllUserData(userPhone)}`);
-                await resetUserData(userPhone);
-                await sendGreetingsTemplate(userPhone);
-                await updateUserState(userPhone, userStates.INITIAL);
-                res.sendStatus(200);
-            }
         }
         // Handle button interactions
         else if (userTextType.toString() === "button") {
