@@ -208,7 +208,7 @@ app.post('/webhook', express.json(), async (req, res) => {
             // }
 
             // Handle reset command
-            else if (userText.match(/start again/i)) {
+            else if (JSON.parse(userText).match(/start again/i)) {
                 console.log(`data is reset for ${userPhone} : ${await getAllUserData(userPhone)}`);
                 await resetUserData(userPhone);
                 await sendGreetingsTemplate(userPhone);
