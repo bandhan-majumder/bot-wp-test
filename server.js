@@ -233,11 +233,19 @@ app.post('/webhook', express.json(), async (req, res) => {
                 try {
                     const userTime = extractDateAndTime(userText);
                     await saveUserData(userPhone, 'time', userTime);
-                    await updateUserState(userPhone, userStates.CONFIRMING_BOOKING);
 
+                    // confirm booking data
                     const userData = await getAllUserData(userPhone);
-                    console.log("User data is: ", userData)
-                    // const resp = await sendBookingConfirmTemplate
+                    const pickupLocation = JSON.parse(userData.confirmedPickupLocation).label;
+                    const dropoff = userData.terminal;
+                    const date = userData.time.date;
+                    const time = userData.time.time;
+
+                    console.log(`Pickup Location: ${pickupLocation}, Dropoff: ${dropoff}, Date: ${date}, Time: ${time}`);
+                    await updateUserState(userPhone, userStates.CONFIRMING_BOOKING);
+                    const resp = await sendBookingConfirmTemplate(userPhone, pickupLocation, dropoff, date, time);
+                    console.log(resp);
+                    return res.sendStatus(200);
 
                 } catch (e) {
                     console.log("Time should be in given format. Eg: January 10th at 10:00 AM", e);
