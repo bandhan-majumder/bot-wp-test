@@ -154,9 +154,7 @@ app.post('/webhook', express.json(), async (req, res) => {
     // check if messages exists in the response or not
     if (body.entry[0].changes[0].value.messages) {
         const userTextType = body.entry[0].changes[0].value.messages[0].type;
-        console.log("body is: ", body.entry[0]);
         const userPhone = constants.RECIEVER_NO;
-        console.log("User phone is: ", userPhone);
 
         // Get current user state from Redis
         let currentState = await getUserState(userPhone) || userStates.INITIAL;
