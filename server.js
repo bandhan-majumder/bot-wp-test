@@ -47,6 +47,7 @@ const sendPossibleLocationTemplate = require('./template/possibleLocationOptions
 const sendLocationConfirmTemplate = require('./template/confirmLocation.js');
 const sendBookingConfirmTemplate = require('./template/bookingConfirm.js');
 const axios = require('axios');
+const extractDateAndTime = require('./helpers/timeMatch.js');
 
 /**
  * This module provides functions to interact with user state and data stored in Redis.
@@ -232,18 +233,17 @@ app.post('/webhook', express.json(), async (req, res) => {
                 }
             }
             else if (currentState === userStates.CONFIRMING_TIME) {
-                const userTime = userText;
-                await saveUserData(userPhone, 'time', userTime);
+                await saveUserData(userPhone, 'time', userText);
                 try {
-                    const resp = await sendFinalBookingMsgTemplate(userPhone, userData);
-                    await updateUserState(userPhone, userStates.CONFIRMING_BOOKING);
-                    const userData = await getAllUserData(userPhone);
-                    console.log("User data is: ", userData);
-                    console.log(resp);
-                    res.sendStatus(200);
+                    const userTime = extractDateAndTime(userText);
+                    console.log("User time is: ", userTime);
+                    if(userTime){
+
+                    } else {
+                        throw new Error("Invalid time format");
+                    }
                 } catch (e) {
-                    console.log("Error in sending response", e);
-                    res.sendStatus(404);
+                    console.log("Time should be in given format. Eg: January 10th at 10:00 AM", e);
                 }
             }
         }
