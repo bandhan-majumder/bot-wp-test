@@ -100,7 +100,6 @@ async function updateUserState(userPhone, newState) {
 async function saveUserData(userPhone, key, value) {
     try {
         if (typeof value != Object) {
-            console.log("COming as objjjj", value)
             return await redis.hset(`user:${userPhone}:data`, key, JSON.stringify(value));
         } else {
             return await redis.set(`user:${userPhone}:data`, key, JSON.stringify(value));
@@ -237,8 +236,11 @@ app.post('/webhook', express.json(), async (req, res) => {
                 await saveUserData(userPhone, 'time', userText);
                 try {
                     const userTime = extractDateAndTime(userText);
-                    console.log("User time is: ", userTime);
-                    if(userTime){
+                    await updateUserState(userPhone, userStates.CONFIRMING_BOOKING);
+                    if(userTime && await currentState === userStates.CONFIRMING_BOOKING) {
+                        const userData = await getAllUserData(userPhone);
+                        console.log("User data is: ", userData)
+                        // const resp = await sendBookingConfirmTemplate
 
                     } else {
                         throw new Error("Invalid time format");
