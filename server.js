@@ -217,7 +217,6 @@ app.post('/webhook', express.json(), async (req, res) => {
                         console.log(selectedLocation);
                         await saveUserData(userPhone, 'confirmedPickupLocation', selectedLocation);
                         const resp = await sendLocationConfirmTemplate(userPhone, selectedLocation.label);
-                        console.log("User state is: ", await getUserState(userPhone));
                         await updateUserState(userPhone, userStates.CONFIRMING_TIME);
                         console.log(resp);
                         res.sendStatus(200);
@@ -231,18 +230,15 @@ app.post('/webhook', express.json(), async (req, res) => {
                 }
             }
             else if (currentState === userStates.CONFIRMING_TIME) {
-                await saveUserData(userPhone, 'time', userText);
                 try {
                     const userTime = extractDateAndTime(userText);
+                    await saveUserData(userPhone, 'time', userTime);
                     await updateUserState(userPhone, userStates.CONFIRMING_BOOKING);
-                    if(userTime && await currentState === userStates.CONFIRMING_BOOKING) {
-                        const userData = await getAllUserData(userPhone);
-                        console.log("User data is: ", userData)
-                        // const resp = await sendBookingConfirmTemplate
 
-                    } else {
-                        throw new Error("Invalid time format");
-                    }
+                    const userData = await getAllUserData(userPhone);
+                    console.log("User data is: ", userData)
+                    // const resp = await sendBookingConfirmTemplate
+
                 } catch (e) {
                     console.log("Time should be in given format. Eg: January 10th at 10:00 AM", e);
                 }
