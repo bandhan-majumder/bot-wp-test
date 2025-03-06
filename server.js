@@ -32,7 +32,8 @@ const userStates = {
     CONFIRMING: 'confirming',
     COMPLETED: 'completed',
     CONFIRMING_TIME: 'confirming_time',
-    CONFIRMING_BOOKING: 'confirming_booking'
+    CONFIRMING_BOOKING: 'confirming_booking',
+    PAYMENTS: 'payments'
 };
 
 // Import the templates
@@ -46,6 +47,7 @@ const sendServicesOptionTemplate = require('./template/servicesOption.js');
 const sendPossibleLocationTemplate = require('./template/possibleLocationOptions.js');
 const sendLocationConfirmTemplate = require('./template/confirmLocation.js');
 const sendBookingConfirmTemplate = require('./template/bookingConfirm.js');
+const sendPaymentsTemplate = require('./template/payments.js');
 const axios = require('axios');
 const extractDateAndTime = require('./helpers/timeMatch.js');
 
@@ -237,14 +239,14 @@ app.post('/webhook', express.json(), async (req, res) => {
                     // confirm booking data
                     const userData = await getAllUserData(userPhone);
                     const pickupLocation = JSON.parse(userData.confirmedPickupLocation).label;
-                    const dropoff = userData.terminal;
+                    const dropoff = (userData.terminal).replace(/"/g, '');
                     const date = JSON.parse(userData.time).date;
                     const time = JSON.parse(userData.time).time;
 
                     if (pickupLocation && dropoff && date && time) {
                         console.log(`Pickup Location: ${pickupLocation}, Dropoff: ${dropoff}, Date: ${date}, Time: ${time}`);
-                        await updateUserState(userPhone, userStates.CONFIRMING_BOOKING);
                         const resp = await sendBookingConfirmTemplate(userPhone, pickupLocation, dropoff, date, time);
+                        await updateUserState(userPhone, userStates.CONFIRMING_BOOKING);
                         console.log(resp);
                     } else {
                         throw error("Missing data to confirm booking");
@@ -254,6 +256,18 @@ app.post('/webhook', express.json(), async (req, res) => {
 
                 } catch (e) {
                     console.log("Time should be in given format. Eg: January 10th at 10:00 AM", e);
+                }
+            }
+            else if (currentState === userStates.CONFIRMING_BOOKING) {
+                if (userText.match(/yes/i)) {
+                    // user confirms. now send the payments link
+                    const resp = await sendPaymentsTemplate(userPhone);
+                    await updateUserState(userPhone, userStates.PAYMENTS);
+                }else {
+                    // user denies. reset the data
+                    await resetUserData(userPhone);
+                    await updateUserState(userPhone, userStates.INITIAL);
+                    await sendGreetingsTemplate(userPhone);
                 }
             }
         }
