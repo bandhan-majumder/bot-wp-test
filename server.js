@@ -238,13 +238,18 @@ app.post('/webhook', express.json(), async (req, res) => {
                     const userData = await getAllUserData(userPhone);
                     const pickupLocation = JSON.parse(userData.confirmedPickupLocation).label;
                     const dropoff = userData.terminal;
-                    const date = userData.time.date;
-                    const time = userData.time.time;
+                    const date = JSON.parse(userData.time).date;
+                    const time = JSON.parse(userData.time).time;
 
-                    console.log(`Pickup Location: ${pickupLocation}, Dropoff: ${dropoff}, Date: ${date}, Time: ${time}`);
-                    await updateUserState(userPhone, userStates.CONFIRMING_BOOKING);
-                    const resp = await sendBookingConfirmTemplate(userPhone, pickupLocation, dropoff, date, time);
-                    console.log(resp);
+                    if (pickupLocation && dropoff && date && time) {
+                        console.log(`Pickup Location: ${pickupLocation}, Dropoff: ${dropoff}, Date: ${date}, Time: ${time}`);
+                        await updateUserState(userPhone, userStates.CONFIRMING_BOOKING);
+                        const resp = await sendBookingConfirmTemplate(userPhone, pickupLocation, dropoff, date, time);
+                        console.log(resp);
+                    } else {
+                        throw error("Missing data to confirm booking");
+                    }
+
                     return res.sendStatus(200);
 
                 } catch (e) {
