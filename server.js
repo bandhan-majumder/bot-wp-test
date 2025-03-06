@@ -101,10 +101,9 @@ async function saveUserData(userPhone, key, value) {
     try {
         if (typeof value != Object) {
             console.log("COming as objjjj", value)
-            return await redis.set(`user:${userPhone}:data`, key, JSON.stringify(value));
-        } else {
-            console.log("not coming as obj: ", typeof value)
             return await redis.hset(`user:${userPhone}:data`, key, JSON.stringify(value));
+        } else {
+            return await redis.set(`user:${userPhone}:data`, key, JSON.stringify(value));
         }
     } catch (e) {
         console.log("Error in saving user data", e);
