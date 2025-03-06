@@ -23,10 +23,10 @@ module.exports = async function sendBookingConfirmTemplate(recpNo, pickup, dropo
                         type: "body",
                         parameters: [{
                             type: "text",
-                            text: pickup
+                            text: dropoff
                         },{
                             type: "text",
-                            text: dropoff
+                            text: pickup
                         },{
                             type: "text",
                             text: date
